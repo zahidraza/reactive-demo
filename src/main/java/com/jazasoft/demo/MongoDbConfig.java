@@ -11,21 +11,19 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 public class MongoDbConfig {
 
     @Bean
-    public ReactiveMongoClientFactoryBean mongoClient() {
+    public ReactiveMongoTemplate reactiveMongoTemplate(MultiTenantMongoDbFactory multiTenantMongoDbFactory) {
+        return new ReactiveMongoTemplate(multiTenantMongoDbFactory);
+    }
 
+    @Bean
+    public MultiTenantMongoDbFactory multiTenantMangoDbFactory(MongoClient mongoClient) {
+        return new MultiTenantMongoDbFactory(mongoClient, "test1");
+    }
+
+    @Bean
+    public ReactiveMongoClientFactoryBean mongoClient() {
         ReactiveMongoClientFactoryBean clientFactory = new ReactiveMongoClientFactoryBean();
         clientFactory.setHost("localhost");
-
         return clientFactory;
-    }
-
-    @Bean
-    public ReactiveMongoTemplate reactiveMongoTemplate(MultiTenantMangoDbFactory multiTenantMangoDbFactory) {
-        return new ReactiveMongoTemplate(multiTenantMangoDbFactory);
-    }
-
-    @Bean
-    public MultiTenantMangoDbFactory multiTenantMangoDbFactory(MongoClient mongoClient) {
-        return new MultiTenantMangoDbFactory(MongoClients.create(), "test1");
     }
 }
